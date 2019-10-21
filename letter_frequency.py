@@ -1,13 +1,11 @@
+#Возвращает спискок, где для каждого файла хранится
+#содержимое файла без whitespace
+def read_strip(*file_names):
+    return [''.join(open(file, 'r', encoding='utf-8').read().split()) for file in file_names]
+
+
 def letter_parser(*file_names):
-    letter_frequency = dict()
-    for file in file_names:
-        with open(file, 'r', encoding='utf-8') as f:
-            for letter in ''.join((''.join(f)).split()): # Избавляюсь от whitespace
-                if not letter in letter_frequency:
-                    letter_frequency[letter] = 1
-                else:
-                    letter_frequency[letter] += 1
-    return letter_frequency
+    return {l:text.count(l) for text in read_strip(*file_names) for l in set(text)}
 
 
 def main():

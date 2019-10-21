@@ -5,11 +5,11 @@ def cyclic_jump(letter, letter_ord):
 
 
 def encrypt(text, padding=3):
-    return ''.join(list(map(lambda x: cyclic_jump(x, ord(x) + padding), text)))
+    return ''.join([cyclic_jump(x, ord(x) + padding) for x in text])
 
 
 def decrypt(text, padding=3):
-    return ''.join(list(map(lambda x: cyclic_jump(x, ord(x) - padding), text)))
+    return ''.join([cyclic_jump(x, ord(x) - padding) for x in text])
 
 
 def main():
