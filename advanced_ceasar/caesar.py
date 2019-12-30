@@ -2,6 +2,7 @@ import argparse
 
 from random import shuffle
 from os.path import normpath
+from collections import defaultdict
 
 LENGTH = 256
 
@@ -28,9 +29,9 @@ def add_options(parser):
         default='key_file',
     )
     parser.add_argument(
-        '--cipher',
-        '-c',
-        default='cipher_file',
+        '--pool',
+        '-p',
+        default='pool_file',
     )
 
 def gen_key(output_path):
@@ -56,6 +57,22 @@ def decrypt(key_path, input_path, output_path):
             reverse_key[val] = key
         out.write(bytes([reverse_key[i] for i in inp.read()]))
 
+def break_cipher(cipher_path, pool_path, output_path):
+    with open(cipher_path, "br") as cip_text,\
+         open(pool_path, "br") as pool,\
+         open(output_path, "bw") as out:
+        cip_dict = {i: 0 for i in range(256)}
+        pool_dict = {i: 0 for i in range(256)}
+        for byte in cip_text.read():
+            cip_dict[byte] += 1
+        for byte in pool.read():
+            pool_dict[byte] += 1
+        cip_freq_sorted = sorted(cip_dict.keys(), key=lambda key: cip_dict[key], reverse=True)
+        pool_freq_sorted = sorted(pool_dict.keys(), key=lambda key: pool_dict[key], reverse=True)
+        key_dict = {i: j for i, j in zip(pool_freq_sorted, cip_freq_sorted)}
+        out.write(bytes([key_dict[i] for i in range(256)]))
+
+
 def main(args):
     # with open(args.input, "bw") as inp:
     #     inp.write(bytes([i for i in range(LENGTH)]))
@@ -65,8 +82,8 @@ def main(args):
         ecnrypt(*map(normpath, (args.key, args.input, args.output)))
     elif args.mode == 'decrypt':
         decrypt(*map(normpath, (args.key, args.input, args.output)))
-    elif args.mode == 'cypher':
-        pass
+    elif args.mode == 'break':
+        break_cipher(*map(normpath, (args.input, args.pool, args.output)))
 
 
 if __name__ == "__main__":
