@@ -2,7 +2,6 @@ import argparse
 
 from random import shuffle
 from os.path import normpath
-from collections import defaultdict
 
 LENGTH = 256
 
@@ -74,8 +73,6 @@ def break_cipher(cipher_path, pool_path, output_path):
 
 
 def main(args):
-    # with open(args.input, "bw") as inp:
-    #     inp.write(bytes([i for i in range(LENGTH)]))
     if args.mode == 'genkey':
         gen_key(normpath(args.key))
     elif args.mode == 'encrypt':
