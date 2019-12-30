@@ -60,8 +60,8 @@ def break_cipher(cipher_path, pool_path, output_path):
     with open(cipher_path, "br") as cip_text,\
          open(pool_path, "br") as pool,\
          open(output_path, "bw") as out:
-        cip_dict = {i: 0 for i in range(256)}
-        pool_dict = {i: 0 for i in range(256)}
+        cip_dict = {i: 0 for i in range(LENGTH)}
+        pool_dict = {i: 0 for i in range(LENGTH)}
         for byte in cip_text.read():
             cip_dict[byte] += 1
         for byte in pool.read():
@@ -69,7 +69,7 @@ def break_cipher(cipher_path, pool_path, output_path):
         cip_freq_sorted = sorted(cip_dict.keys(), key=lambda key: cip_dict[key], reverse=True)
         pool_freq_sorted = sorted(pool_dict.keys(), key=lambda key: pool_dict[key], reverse=True)
         key_dict = {i: j for i, j in zip(pool_freq_sorted, cip_freq_sorted)}
-        out.write(bytes([key_dict[i] for i in range(256)]))
+        out.write(bytes([key_dict[i] for i in range(LENGTH)]))
 
 
 def main(args):
